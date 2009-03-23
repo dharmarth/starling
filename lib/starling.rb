@@ -135,8 +135,8 @@ class Starling < MemCache
     return @force_server if @force_server
 
     bukkits = @buckets.dup
-    bukkits.nitems.times do |try|
-      n = rand(bukkits.nitems)
+    bukkits.count {|i| !i.nil?}.times do |try|
+      n = rand(bukkits.count {|i| !i.nil?})
       server = bukkits[n]
       return server if server.alive?
       bukkits.delete_at(n)
