@@ -5,6 +5,19 @@ class Starling < MemCache
   WAIT_TIME = 0.25
   alias_method :_original_get, :get
   alias_method :_original_delete, :delete
+  
+  def initialize(*args)
+    super
+    
+    # @buckets is no longer used in newer version of Memcache-client(1.6.2 onwards)
+    unless instance_variable_defined?(:@buckets)
+      # Create an array of server buckets for weight selection of servers.
+      @buckets = []
+      @servers.each do |server|
+        server.weight.times { @buckets.push(server) }
+      end
+    end
+  end
 
   ##
   # fetch an item from a queue.
